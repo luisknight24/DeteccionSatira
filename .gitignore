@@ -1,0 +1,4 @@
+echo *.pt>> .gitignore
+echo *.dll>> .gitignore
+echo *.lib>> .gitignore
+echo /venv/>> .gitignore

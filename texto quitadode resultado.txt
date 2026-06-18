@@ -1,0 +1,1 @@
+Sin embargo, a pesar de este buen resultado, los modelos tradicionales se quedan ligeramente por detrás en todas las métricas frente a los modelos Transformer.

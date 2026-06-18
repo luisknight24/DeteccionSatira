@@ -1,0 +1,10 @@
+import nltk
+nltk.download('vader_lexicon')
+
+import nltk
+nltk.download('stopwords')
+
+punkt_tab
+
+import nltk
+nltk.download('punkt_tab')

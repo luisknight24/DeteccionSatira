@@ -1,0 +1,8 @@
+caoloes
+transmicion de listas
+Las caracteristicas mencionadas fueron usadas tambien para hacer finne tuning de los modelos transformers
+comparar el mejor de los traducionales con el mejor de los tranfomres
+
+proyecto de titulacion tema y autor
+
+copia de ppt y en metodologia poner de manera de tabla los modelos que se estan usamdo
