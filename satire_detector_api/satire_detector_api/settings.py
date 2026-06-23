@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-7ong!qktti*cm0cn(y#)vb)qf4^dn_phvxn21wjge#ef8v7we7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -56,6 +56,10 @@ MIDDLEWARE = [
 
 ]
 CORS_ALLOW_ALL_ORIGINS = True
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'bypass-tunnel-reminder',
+]
 ROOT_URLCONF = 'satire_detector_api.urls'
 
 TEMPLATES = [

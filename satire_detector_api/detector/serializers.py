@@ -6,4 +6,4 @@ class SatireDetectionSerializer(serializers.Serializer):
 class SatireDetectionResultSerializer(serializers.Serializer):
     prediction = serializers.CharField()
     probability = serializers.FloatField()
-  
+    metrics = serializers.DictField(child=serializers.FloatField(), required=False)

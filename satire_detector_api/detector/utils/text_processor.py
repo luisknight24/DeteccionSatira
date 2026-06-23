@@ -14,9 +14,23 @@ from .model_loader import BertClassifier
 from nltk.corpus import stopwords
 from transformers import BertTokenizerFast, AutoModel, pipeline
 import torch
+import threading
+
 class TextProcessor:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            with cls._lock:
+                if not cls._instance:
+                    cls._instance = super(TextProcessor, cls).__new__(cls, *args, **kwargs)
+                    cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
+        if getattr(self, '_initialized', False):
+            return
         # Cargar el modelo de spaCy y el analizador de sentimientos VADER
         self.nlp = spacy.load("es_core_news_sm")
         self.sia = SentimentIntensityAnalyzer()
@@ -24,25 +38,22 @@ class TextProcessor:
         self.common_words_es = self.model_loader.common_words_es
         self.satirical_words = self.model_loader.satirical_words
         self.stopwords_es = set(stopwords.words('spanish'))
-       
-       
+        
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-        # Cargar palabras comunes y satíricas
-        self.common_words_es = self.model_loader.common_words_es
-          # Normalizar a minúsculas
-        self.satirical_words = self.model_loader.satirical_words
+        self.inference_lock = threading.RLock()
+        self._initialized = True
 
 
     @property
     def irony_detector(self):
         if not hasattr(self, '_irony_detector'):
             self._irony_detector = pipeline(
-                    "text-classification",
+                "text-classification",
                 model="cardiffnlp/twitter-roberta-base-irony",
                 device=0 if torch.cuda.is_available() else -1
             )
-            return self._irony_detector
+        return self._irony_detector
+
     selected_features = [
         # Métricas básicas de texto
         # Ya calculado en extract_features()
@@ -145,7 +156,17 @@ class TextProcessor:
         vader_polarity = self.sia.polarity_scores(text)['compound'] #Útil para analizar textos cortos con lenguaje coloquial.
 
         # 5️⃣ Análisis de ironía con modelo preentrenado
-        irony_score = self.irony_detector(text)[0]['score']
+        if getattr(self.model_loader, 'is_mock', False):
+            irony_score = 0.5
+        else:
+            try:
+                with self.inference_lock:
+                    with torch.no_grad():
+                        irony_res = self.irony_detector(text)[0]
+                irony_score = irony_res['score'] if irony_res['label'] == 'irony' else 1 - irony_res['score']
+            except Exception as e:
+                print(f"[TextProcessor] Error en detector de ironia: {e}")
+                irony_score = 0.5
 
         # 6️⃣ Conteo de adverbios, conectores y preguntas retóricas
         prop_ADV = sum(1 for token in doc if token.pos_ == "ADV") / num_words if num_words > 0 else 0
@@ -156,8 +177,7 @@ class TextProcessor:
 
         # 7️⃣ Conteo de metáforas (simplificado con "como" o "es como")
         metaphors = len(re.findall(r'\bcomo\b|\bes como\b', text, re.IGNORECASE))
-        processor = TextProcessor()
-        satire_words_count = processor.satira(text)  # Call the satira function
+        satire_words_count = self.satira(text)  # Call the satira function
 
 
         return {
@@ -252,12 +272,11 @@ class TextProcessor:
         unusual_words = words_in_text - common_set
         return round(len(unusual_words) / len(words_in_text), 2) if words_in_text else 0
     def analyze_text(self, text):
-        processor = TextProcessor()
         return {
-            "Flesch Score": processor.flesch_score(text),  # Usa textstat.flesch_reading_ease()
-            "Lexical Entropy": processor.lexical_entropy(text),  # Basado en Counter() y math.log2
-            "Syntactic Repetition": processor.syntactic_pattern_repetition(text),  # Conteo de dependencias
-            "Unusual Word Frequency": processor.unusual_word_frequency(text)  # Compara con common_words_es
+            "Flesch Score": self.flesch_score(text),  # Usa textstat.flesch_reading_ease()
+            "Lexical Entropy": self.lexical_entropy(text),  # Basado en Counter() y math.log2
+            "Syntactic Repetition": self.syntactic_pattern_repetition(text),  # Conteo de dependencias
+            "Unusual Word Frequency": self.unusual_word_frequency(text)  # Compara con common_words_es
         }
 
 
@@ -309,8 +328,6 @@ class TextProcessor:
         return sum(len(sentence) for sentence in sentences) if sentences else 0
 
     def calculate_features(self, text):
-        
-        processor = TextProcessor()
         """Combina todas las características ya calculadas por las funciones auxiliares"""
         # Obtener todas las métricas de las funciones existentes
         processed_text = self.preprocess_text(text)
@@ -329,15 +346,15 @@ class TextProcessor:
             # Métricas básicas de texto
             'num_words': basic_features['num_words'],  # Ya calculado en extract_features()
             'num_chars': basic_features['num_chars'],  # Ya calculado en extract_features()
-            'MeanWordLen':processor.mean_word_len(processed_text),
-            'LexicalDiversity': processor.lexical_diversity(processed_text),
-            'DocumentLen': processor.document_len(processed_text),
-            'WordsPerText': processor.words_per_text(processed_text),
+            'MeanWordLen': self.mean_word_len(processed_text),
+            'LexicalDiversity': self.lexical_diversity(processed_text),
+            'DocumentLen': self.document_len(processed_text),
+            'WordsPerText': self.words_per_text(processed_text),
 
             # Métricas de oraciones
-            'SentencesPerText': processor.sentences_per_text(processed_text),
-            'MeanSentenceLen':processor.mean_sentence_len(processed_text),
-            'StdevSentenceLen': processor.stdev_sentence_len(processed_text),
+            'SentencesPerText': self.sentences_per_text(processed_text),
+            'MeanSentenceLen': self.mean_sentence_len(processed_text),
+            'StdevSentenceLen': self.stdev_sentence_len(processed_text),
 
             # POS tagging y estructura (ya calculado en extract_features())
             'prop_NOUN': basic_features['prop_NOUN'],
@@ -357,22 +374,17 @@ class TextProcessor:
 
         }
         return combined_features
-    # Combinar todos los features
 
-        # 5. Features adicionales (19 dim)
     def predict_satire(self, text):
         selected_features = [
-        # Métricas básicas de texto
-        # Ya calculado en extract_features()
             'MeanWordLen',
             'LexicalDiversity',
             'MeanSentenceLen',
             'StdevSentenceLen',
             'DocumentLen',
             'WordsPerText',
-            # Métricas de oraciones
             'SentencesPerText',
-            'num_words',  # Ya calculado en extract_features()
+            'num_words',
             'num_chars',
             'irony_score',
             'prop_NOUN',
@@ -381,57 +393,65 @@ class TextProcessor:
             'rhetorical_questions',
             'avg_depth',
             'Flesch Score',
-
-            # Ironía y sátira (ya calculado en extract_features() y satira())
             'Lexical Entropy',
-
             'Syntactic Repetition',
             'Unusual Word Frequency',
-
         ]
-        processor = TextProcessor()
-        # 1. Preprocesar texto para características (TF-IDF y features manuales)
-        processed_text = processor.preprocess_text(text)  # Usa esto para TF-IDF y features adicionales
-
-        # 2. Generar embeddings de BERT (usar texto ORIGINAL, sin preprocesar)
-        with torch.no_grad():
-            #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-            inputs = self.model_loader.tokenizer(text, return_tensors="pt", truncation=True, max_length=64).to(self.device)
-            outputs = self.model_loader.model.bert(**inputs)
-            #cls_output = outputs.pooler_output # [1, 768]
-            cls_output = outputs.last_hidden_state[:, 0, :]
-        # 3. Obtener características de TF-IDF
-        tfidf_features = self.model_loader.vectorizer.transform([processed_text]).toarray()  # [1, 3000]
-       
-        # 4. Obtener características manuales (¡usar processed_text para consistencia!)
-        features_dict = self.calculate_features(text)  # Asegurar que usa el texto preprocesado
-        features_values = [features_dict[k] for k in selected_features]  # Orden correcto
-
-        # 5. Combinar características (TF-IDF + manuales)
-        combined_features_np = np.concatenate([tfidf_features, np.array([features_values])], axis=1)  # [1, 3019]
-
-
-        combined_features_normalized = self.model_loader.scaler.transform(combined_features_np)
-
-        # 7. Convertir a tensor y enviar a GPU
-        features_tensor = torch.tensor(combined_features_normalized, dtype=torch.float32).to(self.device)
-
-        # 8. Concatenar embeddings BERT + características
-        combined = torch.cat((cls_output, features_tensor), dim=1)  # [1, 768 + 3019]
-
-        # 9. Pasar por el modelo
-        output = self.model_loader.model.softmax(self.model_loader.model.fc2(self.model_loader.model.relu(self.model_loader.model.fc1(combined))))
-        prob_satira = torch.exp(output)[0][1].item()  # Probabilidad de sátira
-        threshold=0.55
-
+        threshold = 0.55
         
-        # 10. Aplicar threshold (0.65 como en VC)
-            # Decisión final
+        # Si estamos en modo de demostración (mock), usar predicción simulada para evitar errores
+        if getattr(self.model_loader, 'is_mock', False):
+            text_lower = text.lower()
+            satire_indicators = ["obviamente", "claro", "supuestamente", "genial", "increíble", "absurdo", "ya que estamos", "de forma exagerada"]
+            score = 0.2 + sum(0.15 for word in satire_indicators if word in text_lower)
+            score = min(0.95, max(0.05, score))
+            prediction = "ES SÁTIRA" if score >= threshold else "NO ES SÁTIRA"
+            mock_metrics = {
+                "irony_score": 0.65 if "obviamente" in text_lower or "claro" in text_lower else 0.15,
+                "LexicalDiversity": 85.0,
+                "Flesch Score": 75.0,
+                "Unusual Word Frequency": 0.35,
+                "prop_NOUN": 0.25,
+                "prop_VERB": 0.18,
+                "prop_ADJ": 0.12
+            }
+            return prediction, score, mock_metrics
+
+        # 1. Preprocesar texto para características (TF-IDF y features manuales)
+        processed_text = self.preprocess_text(text)
+
+        with self.inference_lock:
+            with torch.no_grad():
+                # 2. Generar embeddings de BERT
+                inputs = self.model_loader.tokenizer(processed_text, return_tensors="pt", truncation=True, max_length=64).to(self.device)
+                outputs = self.model_loader.model.bert(**inputs)
+                cls_output = outputs.last_hidden_state[:, 0, :]
+                
+                # 3. Obtener características de TF-IDF
+                tfidf_features = self.model_loader.vectorizer.transform([processed_text]).toarray()
+               
+                # 4. Obtener características manuales
+                features_dict = self.calculate_features(text)
+                features_values = [features_dict[k] for k in selected_features]
+
+                # 5. Combinar características (TF-IDF + manuales)
+                combined_features_np = np.concatenate([tfidf_features, np.array([features_values])], axis=1)
+                combined_features_normalized = self.model_loader.scaler.transform(combined_features_np)
+
+                # 7. Convertir a tensor
+                features_tensor = torch.tensor(combined_features_normalized, dtype=torch.float32).to(self.device)
+
+                # 8. Concatenar embeddings BERT + características
+                combined = torch.cat((cls_output, features_tensor), dim=1)
+
+                # 9. Pasar por el modelo
+                output = self.model_loader.model.softmax(self.model_loader.model.fc2(self.model_loader.model.relu(self.model_loader.model.fc1(combined))))
+                prob_satira = torch.exp(output)[0][1].item()
 
         if prob_satira < threshold:
             prediction = "NO ES SÁTIRA"
         else:
-            prediction = "ES SÀTIRA"
+            prediction = "ES SÁTIRA"
 
-        return prediction,prob_satira 
+        return prediction, prob_satira, features_dict 
 

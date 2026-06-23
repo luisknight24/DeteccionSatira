@@ -1,4 +1,17 @@
-echo *.pt>> .gitignore
-echo *.dll>> .gitignore
-echo *.lib>> .gitignore
-echo /venv/>> .gitignore
+*.pt
+*.pkl
+*.dll
+*.lib
+venv/
+__pycache__/
+*.pyc
+*.pyo
+db.sqlite3
+/staticfiles/
+.env
+.gemini/
+/satire_detector_api/static/model_files/
+/satire_detector_api/static/best_model_spanish_loss.pt
+/satire_detector_api/static/tfidf_vectorizer.pkl
+/satire_detector_api/static/minmax_scaler.pkl
+.agents/
