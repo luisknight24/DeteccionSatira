@@ -1,0 +1,294 @@
+/* Estilos de la estructura y contenedor base layout */
+
+.contenedor-principal-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: var(--espacio-lg);
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.barra-navegacion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--espacio-md) var(--espacio-lg);
+  margin-bottom: var(--espacio-xl);
+  background: var(--fondo-tarjeta);
+  z-index: 10;
+}
+
+.marca-navegacion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+}
+
+.escudo-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(213, 162, 63, 0.05);
+  border: 1px solid rgba(213, 162, 63, 0.2);
+}
+
+.icono-logo {
+  font-size: 24px;
+  color: var(--color-primario);
+}
+
+.titulo-visualizacion {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-family: var(--fuente-titulos);
+}
+
+.etiqueta-version {
+  display: inline-block;
+  color: var(--texto-atenuado);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: #192025;
+  border: 1px solid var(--borde-sutil);
+  margin-top: 1px;
+}
+
+.menu-navegacion-contenedor {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+}
+
+.menu-navegacion {
+  display: flex;
+  gap: var(--espacio-xs);
+}
+
+.elemento-navegacion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--texto-atenuado);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transicion-rapida);
+}
+
+.elemento-navegacion:hover {
+  background: var(--fondo-resaltado);
+  color: var(--texto-principal);
+}
+
+.elemento-navegacion.active {
+  background: var(--fondo-resaltado);
+  color: var(--color-primario);
+  border-color: var(--borde-sutil);
+}
+
+.icono-navegacion {
+  font-size: 18px;
+}
+
+/* Botón de configuración (engranaje) */
+.boton-configuracion {
+  background: transparent;
+  border: 1px solid var(--borde-sutil);
+  color: var(--texto-atenuado);
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transicion-rapida);
+}
+
+.boton-configuracion:hover {
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+.boton-configuracion:hover span {
+  animation: spin-gear 2.5s linear infinite;
+}
+
+.boton-configuracion.activo {
+  background: var(--color-primario-tenue);
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+@keyframes spin-gear {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Panel Desplegable de Configuración de la API */
+.panel-desplegable-configuracion {
+  position: absolute;
+  top: 90px;
+  right: var(--espacio-lg);
+  width: 380px;
+  padding: 20px;
+  z-index: 100;
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--color-primario);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: dropdown-slide 0.25s ease-out;
+}
+
+@keyframes dropdown-slide {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cabecera-configuracion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--espacio-md);
+  border-bottom: 1px solid var(--borde-sutil);
+  padding-bottom: 10px;
+}
+
+.cabecera-configuracion h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--texto-principal);
+}
+
+.boton-cerrar-configuracion {
+  background: transparent;
+  border: none;
+  color: var(--texto-atenuado);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color var(--transicion-rapida);
+}
+
+.boton-cerrar-configuracion:hover {
+  color: var(--color-satira);
+}
+
+.cuerpo-configuracion {
+  margin-bottom: var(--espacio-lg);
+}
+
+.cuerpo-configuracion p {
+  font-size: 12px;
+  color: var(--texto-atenuado);
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.grupo-entrada {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.grupo-entrada label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+.entrada-texto-personalizada {
+  width: 100%;
+  padding: 8px 12px;
+  background: #0d0f12;
+  border: 1px solid var(--borde-sutil);
+  border-radius: 6px;
+  color: var(--texto-principal);
+  font-size: 12.5px;
+  outline: none;
+  transition: border-color var(--transicion-rapida);
+}
+
+.entrada-texto-personalizada:focus {
+  border-color: var(--color-primario);
+}
+
+.pie-configuracion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.boton-restablecer {
+  background: transparent;
+  border: 1px solid var(--borde-sutil);
+  color: var(--texto-atenuado);
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--transicion-rapida);
+}
+
+.boton-restablecer:hover {
+  background: var(--fondo-resaltado);
+  color: var(--texto-principal);
+}
+
+.boton-guardar {
+  background: var(--color-primario);
+  color: var(--fondo-oscuro);
+  border: none;
+  padding: 6px 16px;
+  font-size: 11.5px;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background var(--transicion-rapida);
+}
+
+.boton-guardar:hover:not(:disabled) {
+  background: #e0ac48;
+}
+
+.boton-guardar:disabled {
+  background: #252c34;
+  color: var(--texto-oscuro);
+  cursor: not-allowed;
+}
+
+.contenido-principal {
+  flex: 1;
+}
+
+.pie-pagina-app {
+  text-align: center;
+  padding: var(--espacio-lg) 0;
+  margin-top: var(--espacio-xl);
+  border-top: 1px solid var(--borde-sutil);
+}
+
+.pie-pagina-app p {
+  font-size: 11px;
+  color: var(--texto-oscuro);
+}
+
+@media (max-width: 480px) {
+  .panel-desplegable-configuracion {
+    width: calc(100% - 2 * var(--espacio-lg));
+  }
+}

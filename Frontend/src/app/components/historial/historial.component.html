@@ -1,0 +1,52 @@
+<section class="seccion-pestaña seccion-historial panel-base">
+  <div style="margin-bottom: 6px;" class="cabecera-seccion">
+    <div>
+      <h2 class="titulo-seccion">Historial de consultas</h2>
+      <p class="subtitulo-seccion">Listado de los análisis almacenados localmente en esta sesión.</p>
+    </div>
+    <button class="boton-limpiar-historial" (click)="limpiarHistorial()" [disabled]="listaHistorial.length === 0">
+      <span class="material-symbols-outlined btn-icon">delete_forever</span>
+      Limpiar historial
+    </button>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table *ngIf="listaHistorial.length > 0" class="tabla-historial">
+      <thead>
+        <tr>
+          <th>Texto</th>
+          <th>Predicción</th>
+          <th>Probabilidad de sátira</th>
+          <th>Fecha</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entrada of listaHistorial">
+          <td class="columna-texto">
+            <div class="texto-truncado">{{ entrada.texto }}</div>
+          </td>
+          <td>
+            <span class="placa-tabla" [class.placa-satira]="entrada.prediccion === 'ES SÁTIRA'">
+              {{ entrada.prediccion }}
+            </span>
+          </td>
+          <td class="columna-probabilidad">{{ (entrada.probabilidad * 100) | number:'1.0-0' }}%</td>
+          <td class="columna-fecha">{{ entrada.fecha }}</td>
+          <td>
+            <button class="boton-restaurar" (click)="seleccionarEntradaHistorial(entrada)">
+              Analizar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Estado de historial vacío -->
+    <div *ngIf="listaHistorial.length === 0" class="historial-vacio">
+      <span class="material-symbols-outlined icono-vacio-grande">cloud_off</span>
+      <h3>No hay consultas registradas</h3>
+      <p>Tu historial está vacío. Comienza ingresando un texto en el detector.</p>
+    </div>
+  </div>
+</section>

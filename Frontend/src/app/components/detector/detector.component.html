@@ -1,0 +1,232 @@
+<section class="seccion-pestaña cuadricula-bento">
+
+  <!-- Tarjeta de entrada para el analizador -->
+  <div class="tarjeta-bento tarjeta-entrada panel-base">
+    <div class="cabecera-tarjeta">
+      <div class="placa-cabecera">Procesamiento de texto</div>
+      <h2 class="titulo-tarjeta">Detección de sátira orientada a textos en español</h2>
+      <!-- <p class="subtitulo-tarjeta">Escribe o pega una transcripción en español para extraer sus características
+        sintácticas y semánticas.</p> -->
+    </div>
+
+    <div class="cuerpo-tarjeta">
+      <!-- Nota de uso general sobre la longitud del texto -->
+      <div style="margin-top: -20px;" class="banner-nota-uso">
+        <span class="material-symbols-outlined icono-nota">info</span>
+        <p class="texto-nota">
+          <strong>Nota de uso:</strong> El modelo clasificador fue entrenado con trascripciones de audio extensas, por
+          lo que, alcanza una mayor eficacia con textos largos. Se recomienda ingresar textos de
+          <strong>al menos 120 caracteres</strong> para obtener predicciones precisas y con mayor confianza.
+        </p>
+      </div>
+
+      <div class="envoltura-area-texto">
+        <textarea class="area-texto-personalizada" placeholder="Ingresa texto para analizar..."
+          [(ngModel)]="textoIngresado" rows="9" maxlength="2000" [disabled]="cargando">
+        </textarea>
+        <button *ngIf="textoIngresado" class="boton-limpiar-linea" (click)="textoIngresado = ''" [disabled]="cargando">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Métricas del texto en tiempo real -->
+      <div class="fila-metricas">
+        <div class="pildora-metrica">
+          <span class="material-symbols-outlined icono-pildora">notes</span>
+          <div class="datos-pildora">
+            <span class="valor-pildora">{{ conteoPalabras }}</span>
+            <span class="etiqueta-pildora">Palabras</span>
+          </div>
+        </div>
+        <div class="pildora-metrica">
+          <span class="material-symbols-outlined icono-pildora">abc</span>
+          <div class="datos-pildora">
+            <span class="valor-pildora">{{ conteoCaracteres }}</span>
+            <span class="etiqueta-pildora">Caracteres</span>
+          </div>
+        </div>
+        <!-- <div class="pildora-metrica">
+          <span class="material-symbols-outlined icono-pildora">schedule</span>
+          <div class="datos-pildora">
+            <span class="valor-pildora">{{ tiempoLectura }} min</span>
+            <span class="etiqueta-pildora">Lectura</span>
+          </div>
+        </div> -->
+        <div class="pildora-metrica">
+          <span class="material-symbols-outlined icono-pildora">priority_high</span>
+          <div class="datos-pildora">
+            <span class="valor-pildora">{{ conteoExclamaciones }}</span>
+            <span class="etiqueta-pildora">Exclamaciones</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pie-tarjeta">
+      <button class="boton-enviar" (click)="analizarTexto()" [disabled]="cargando || !textoIngresado.trim()">
+        <span *ngIf="!cargando" class="contenido-boton">
+          <span class="material-symbols-outlined">neurology</span>
+          Ejecutar clasificación
+        </span>
+        <span *ngIf="cargando" class="contenedor-cargador">
+          <span class="cargador"></span> Procesando...
+        </span>
+      </button>
+    </div>
+
+    <!-- Panel de error de conexión -->
+    <div *ngIf="mensajeError" class="panel-error">
+      <span class="material-symbols-outlined icono-error">error</span>
+      <div class="detalles-error">
+        <strong>Error de Conexión</strong>
+        <p>{{ mensajeError }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tarjeta de resultados del modelo -->
+  <div class="tarjeta-bento tarjeta-resultados panel-base" [class.predicho]="resultado && !cargando">
+
+    <!-- Estado vacío inicial -->
+    <div *ngIf="!resultado && !cargando" class="contenedor-estado estado-vacio">
+      <div class="contenedor-icono-pulso">
+        <span class="material-symbols-outlined icono-pulso">insights</span>
+      </div>
+      <h3>Esperando entrada</h3>
+      <p>El modelo analizará el texto en cuanto envíes tu transcripción.</p>
+    </div>
+
+    <!-- Estado de carga / procesamiento -->
+    <div *ngIf="cargando" class="contenedor-estado estado-cargando">
+      <div class="contenedor-engranajes">
+        <span class="material-symbols-outlined engranaje-1 rotando">settings</span>
+        <span class="material-symbols-outlined engranaje-2 contra-rotando">settings</span>
+      </div>
+      <h3>Extrayendo características</h3>
+      <p class="paso-cargando">Paso 1: Generando embeddings semánticos con BETO...</p>
+      <div class="barra-progreso-cargando">
+        <div class="relleno-barra animando"></div>
+      </div>
+    </div>
+
+    <!-- Resultados resueltos por el clasificador -->
+    <div *ngIf="resultado && !cargando" class="vista-prediccion"
+      [class.es-satira]="resultado.prediccion === 'ES SÁTIRA'">
+      <div class="brillo-prediccion"></div>
+
+      <div class="contenedor-placa-resultado">
+        <div class="placa-clase" [class.fondo-satira]="resultado.prediccion === 'ES SÁTIRA'">
+          <span class="material-symbols-outlined icono-placa">
+            {{ resultado.prediccion === 'ES SÁTIRA' ? 'campaign' : 'check_circle' }}
+          </span>
+          {{ resultado.prediccion === 'ES SÁTIRA' ? 'SÁTIRA DETECTADA' : 'TEXTO NEUTRAL / INFORMATIVO' }}
+        </div>
+      </div>
+
+      <!-- Medidor radial de confianza -->
+      <div class="seccion-medidor">
+        <div class="medidor-radial">
+          <svg viewBox="0 0 100 100" class="svg-medidor">
+            <circle cx="50" cy="50" r="40" class="circulo-fondo-medidor"></circle>
+            <circle cx="50" cy="50" r="40" class="circulo-valor-medidor"
+              [style.strokeDashoffset]="251.2 - (251.2 * resultado.probabilidad)">
+            </circle>
+          </svg>
+          <div class="texto-valor-medidor">
+            <span class="numero-porcentaje">{{ (resultado.probabilidad * 100) | number:'1.0-0' }}%</span>
+            <span class="etiqueta-porcentaje">Probabilidad de sátira</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="explicacion-prediccion">
+        <h4>Análisis del modelo híbrido</h4>
+        <p *ngIf="resultado.prediccion === 'ES SÁTIRA'">
+          El texto presenta una probabilidad alta de ser sátira. Se identificó una desviación típica en métricas
+          estilográficas de legibilidad y una densidad notable de marcadores fraseológicos irónicos.
+        </p>
+        <p *ngIf="resultado.prediccion === 'NO ES SÁTIRA'">
+          Clasificado como texto normal o informativo. Las métricas sintácticas y las representaciones semánticas de
+          BETO corresponden a un estilo estándar periodístico u objetivo.
+        </p>
+      </div>
+
+      <!-- Guía rápida de interpretación de la probabilidad -->
+      <div class="guia-interpretacion">
+        <div class="cabecera-guia">
+          <span class="material-symbols-outlined icono-guia">info</span>
+          <h5>Guía de interpretación</h5>
+        </div>
+        <p class="texto-guia">
+          La sátira es una manifestación lingüística subjetiva y dependiente del contexto. El umbral de decisión del
+          clasificador híbrido está fijado en el <strong>55%</strong>:
+        </p>
+        <ul class="lista-guia">
+          <li><strong>Menor a 55%:</strong> Clasificado como texto informativo / neutral.</li>
+          <li><strong>55% o mayor:</strong> Clasificado como sátira.</li>
+        </ul>
+        <p class="texto-guia-alerta">
+          Los valores cercanos al umbral del 55% indican casos ambiguos que requieren una interpretación más subjetiva.
+          Por el contrario, los valores extremos cercanos al 0% o 100% indican un alto grado de certeza en la decisión
+          del modelo.
+        </p>
+      </div>
+
+      <!-- Métricas clave explicadas de forma didáctica -->
+      <!-- <div class="metricas-clave-analisis" *ngIf="resultado.metricas">
+        <div class="cabecera-metricas-clave">Métricas lingüísticas clave</div>
+
+        <div class="lista-metricas-contexto"> -->
+      <!-- Ironía -->
+      <!-- <div class="item-metrica-contexto">
+            <div class="nombre-valor-metrica">
+              <span class="nombre">Tono irónico (RoBERTa)</span>
+              <span class="valor">{{ (resultado.metricas.irony_score * 100) | number:'1.0-0' }}%</span>
+            </div>
+            <p class="contexto-explicacion">
+              Mide la probabilidad de presencia de ironía o sarcasmo implícito en la redacción. Valores altos (>60%)
+              sugieren el uso de disonancias cognitivas características del humor satírico.
+            </p>
+          </div> -->
+
+      <!-- Diversidad Léxica -->
+      <!-- <div class="item-metrica-contexto">
+            <div class="nombre-valor-metrica">
+              <span class="nombre">Riqueza de vocabulario</span>
+              <span class="valor">{{ resultado.metricas.LexicalDiversity | number:'1.0-0' }}%</span>
+            </div>
+            <p class="contexto-explicacion">
+              Porcentaje de términos únicos utilizados. La sátira literaria suele emplear una alta densidad de
+              vocabulario diverso para enriquecer el doble sentido y evitar repeticiones simples.
+            </p>
+          </div> -->
+
+      <!-- Flesch Score -->
+      <!-- <div class="item-metrica-contexto">
+            <div class="nombre-valor-metrica">
+              <span class="nombre">Índice Flesch (legibilidad)</span>
+              <span class="valor">{{ resultado.metricas['Flesch Score'] | number:'1.0-1' }}</span>
+            </div>
+            <p class="contexto-explicacion">
+              Complejidad estructural de la lectura (puntuaciones bajas indican textos más elaborados). La sátira suele
+              requerir una sintaxis más compleja debido a su naturaleza retórica e indirecta.
+            </p>
+          </div> -->
+
+      <!-- Unusual Word Frequency -->
+      <!-- <div class="item-metrica-contexto">
+            <div class="nombre-valor-metrica">
+              <span class="nombre">Palabras inusuales</span>
+              <span class="valor">{{ (resultado.metricas['Unusual Word Frequency'] * 100) | number:'1.0-0' }}%</span>
+            </div>
+            <p class="contexto-explicacion">
+              Proporción de vocabulario fuera del diccionario estándar CREA de la RAE. Un porcentaje elevado indica el
+              uso de neologismos, juegos de palabras o términos infrecuentes para acentuar el humor.
+            </p>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+</section>

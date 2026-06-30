@@ -1,0 +1,86 @@
+/* Sistema visual y variables globales de diseño */
+:root {
+  /* Paleta de colores - Estilo Swiss Cyber-Editorial (Sin brillos neón) */
+  --fondo-oscuro: #0d0f12;            /* Fondo pizarra carbón */
+  --fondo-tarjeta: #14181c;           /* Tarjeta sólida */
+  --fondo-resaltado: #1b2126;         /* Tarjeta enfocada o en hover */
+  
+  --color-primario: #d5a23f;          /* Ocre / Muted Gold (Acento principal) */
+  --color-primario-tenue: rgba(213, 162, 63, 0.1);
+  
+  --color-satira: #d9534f;           /* Naranja óxido (Sátira) */
+  --color-satira-tenue: rgba(217, 83, 79, 0.1);
+  
+  --color-normal: #4b8f72;           /* Verde salvia (Neutral) */
+  --color-normal-tenue: rgba(75, 143, 114, 0.1);
+  
+  --texto-principal: #f3f4f6;        /* Blanco hueso */
+  --texto-atenuado: #8692a6;          /* Gris pizarra */
+  --texto-oscuro: #4b5563;
+  
+  --borde-sutil: #22272e;            /* Bordes extra finos */
+  --borde-enfoque: #d5a23f;
+  
+  /* Tipografías */
+  --fuente-titulos: 'Outfit', sans-serif;
+  --fuente-cuerpo: 'Inter', sans-serif;
+  
+  /* Sistema de espaciado en múltiplos de 8px */
+  --espacio-xs: 4px;
+  --espacio-sm: 8px;
+  --espacio-md: 16px;
+  --espacio-lg: 24px;
+  --espacio-xl: 32px;
+  
+  /* Transiciones */
+  --transicion-rapida: 0.15s ease-in-out;
+  --transicion-normal: 0.25s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--fuente-cuerpo);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--fondo-oscuro);
+  color: var(--texto-principal);
+  min-height: 100vh;
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* Tarjetas base con borde fino plano */
+.panel-base {
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-sutil);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: border-color var(--transicion-normal), background-color var(--transicion-normal), transform var(--transicion-normal);
+}
+
+/* Barra de desplazamiento lateral */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--fondo-oscuro);
+}
+::-webkit-scrollbar-thumb {
+  background: #252c34;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #37424e;
+}
+
+.texto-degradado {
+  background: linear-gradient(135deg, #f3f4f6 0%, #d5a23f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

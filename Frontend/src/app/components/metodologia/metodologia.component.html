@@ -1,0 +1,424 @@
+<!-- Estructura interactiva en pestañas para segmentar la información metodológica compleja sin saturar la vista. -->
+
+<!-- Tarjeta superior: Introducción (siempre visible) -->
+<div class="tarjeta-bento panel-base" style="margin-bottom: var(--espacio-lg); padding: var(--espacio-xl);">
+  <div class="cuadricula-introduccion">
+    <!-- Columna Izquierda: Introducción -->
+    <div class="columna-introduccion-texto">
+      <div class="placa-cabecera">Metodología de implementación</div>
+      <p class="introduccion-acerca-de"
+        style="font-size: 13px; text-align: justify; margin: 0; line-height: 1.6; color: var(--texto-atenuado);">
+        El presente proyecto es el resultado de una investigación orientada a la detección automática de sátira en
+        textos en español. Durante el desarrollo, se experimentó tanto con modelos de Machine Learning tradicionales,
+        como también basados en la arquitectura Transformer (RoBERTa, BERT, DistilBERT, etc.), comparando sus
+        rendimientos a través de distintas métricas. Para enriquecer el análisis semántico de los clasificadores,
+        inicialmente se extrajeron 159 características lingüísticas que abarcan aspectos sintácticos, semánticos y
+        fraseológicos. Con el objetivo de optimizar la eficiencia del sistema y evitar el sobreajuste, se implementó la
+        técnica "feature selection" para reducir el conjunto de características, filtrando las mejores 19.
+        Paralelamente, se aplicó un fine-tuning sobre los modelos Transformer, acoplándolos con este conjunto de
+        características seleccionadas. Al finalizar las evaluaciones, el modelo híbrido BETO obtuvo los mejores
+        resultados en las métricas de rendimiento, por lo cual, fue seleccionado como motor de clasificación en el
+        despliegue general.
+      </p>
+    </div>
+
+    <!-- Columna Derecha: Gráfico/Matriz de Confusión -->
+    <div class="columna-introduccion-grafico">
+      <div class="cabecera-grafico">
+        <span class="placa-cabecera" style="color: var(--color-primario); margin-bottom: 2px;">Validación del
+          modelo</span>
+        <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--texto-principal);">Matriz de confusión
+          (BETO híbrido)</h4>
+      </div>
+
+      <div class="contenedor-matriz-visual">
+        <div class="matriz-grafica">
+          <!-- Etiquetas superiores de Predicción -->
+          <div class="etiqueta-eje-x">PREDICCIÓN</div>
+          <div class="cabeceras-x">
+            <span class="subetiqueta-x">No Sátira</span>
+            <span class="subetiqueta-x">Sátira</span>
+          </div>
+
+          <!-- Cuerpo de la matriz con etiquetas de Realidad a la izquierda -->
+          <div class="cuerpo-matriz">
+            <div class="etiqueta-eje-y">REAL</div>
+            <div class="filas-matriz">
+              <div class="fila-matriz">
+                <span class="etiqueta-y">No Sátira</span>
+                <!-- Celda TN -->
+                <div class="celda-matriz acierto"
+                  title="Verdaderos Negativos: Textos serios clasificados correctamente">
+                  <span class="valor-celda">651</span>
+                  <span class="leyenda-celda">TN</span>
+                </div>
+                <!-- Celda FP -->
+                <div class="celda-matriz error" title="Falsos Positivos: Textos serios confundidos con sátira">
+                  <span class="valor-celda">100</span>
+                  <span class="leyenda-celda">FP</span>
+                </div>
+              </div>
+              <div class="fila-matriz">
+                <span class="etiqueta-y">Sátira</span>
+                <!-- Celda FN -->
+                <div class="celda-matriz error" title="Falsos Negativos: Textos satíricos no identificados">
+                  <span class="valor-celda">87</span>
+                  <span class="leyenda-celda">FN</span>
+                </div>
+                <!-- Celda TP -->
+                <div class="celda-matriz acierto"
+                  title="Verdaderos Positivos: Textos satíricos detectados correctamente">
+                  <span class="valor-celda">602</span>
+                  <span class="leyenda-celda">TP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="explicacion-matriz">
+          <p style="margin: 0; font-size: 11px; color: var(--texto-atenuado); line-height: 1.4; text-align: justify;">
+            La matriz evaluada sobre <strong>1,440 textos reales de test</strong> refleja:
+          </p>
+          <ul class="lista-explicacion-matriz"
+            style="margin: 4px 0 0 0; padding-left: 12px; font-size: 10.5px; color: var(--texto-atenuado); display: flex; flex-direction: column; gap: 2px; line-height: 1.3;">
+            <li><strong>651 y 602 aciertos</strong>: Neutros y sátiras clasificados correctamente
+              (<strong>87.01%</strong> de exactitud global).</li>
+            <li><strong>100 Falsos Positivos (FP)</strong>: Textos serios confundidos con sátira (bajo error de
+              clasificación).</li>
+            <li><strong>87 Falsos Negativos (FN)</strong>: Sátiras no identificadas por el modelo (sensibilidad del
+              87.37%).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Selectores de sección interactivos (Tabs) -->
+<div class="contenedor-selectores-metodologia">
+  <button class="boton-tab" [class.activo]="seccionActiva === 'fases'" (click)="seleccionarSeccion('fases')">
+    <span class="material-symbols-outlined">science</span>
+    Fases y proceso
+  </button>
+  <button class="boton-tab" [class.activo]="seccionActiva === 'metricas'" (click)="seleccionarSeccion('metricas')">
+    <span class="material-symbols-outlined">analytics</span>
+    Características de PLN
+  </button>
+  <button class="boton-tab" [class.activo]="seccionActiva === 'rendimiento'"
+    (click)="seleccionarSeccion('rendimiento')">
+    <span class="material-symbols-outlined">equalizer</span>
+    Rendimiento global
+  </button>
+</div>
+
+<!-- Secciones Dinámicas -->
+
+<!-- Sección: Fases y proceso -->
+<div *ngIf="seccionActiva === 'fases'" class="seccion-metodologia-dinamica animacion-desvanecer">
+  <div class="cuadricula-fases-proceso">
+    <!-- Columna Izquierda: Fases del proyecto y experimentación -->
+    <div class="tarjeta-bento panel-base tarjeta-metodologia-proceso">
+      <div class="cabecera-tarjeta">
+        <div class="placa-cabecera">Modelado y entrenamiento</div>
+        <h3 class="titulo-tarjeta">Fases del proyecto y experimentación</h3>
+        <p class="subtitulo-tarjeta" style="min-height: 58px;">
+          El proceso de desarrollo del clasificador híbrido se llevó a cabo a través de cuatro etapas
+          estructuradas de experimentación y optimización:
+        </p>
+      </div>
+      <div class="rejilla-fases-proyecto-v2">
+        <div class="tarjeta-fase">
+          <span class="material-symbols-outlined icono-fase">folder_open</span>
+          <div class="contenido-fase">
+            <h4>Dataset y balanceo (SMOTE)</h4>
+            <p>Se empleó el corpus SatiSPeech de transcripciones de audio, que contiene 6000 registros tanto de texto
+              satírico como neutro, así como scripts de refuerzo, con 1200 registros contextualizados. Para
+              balancear la distribución de las clases de sátira y no-sátira en el conjunto de
+              entrenamiento, se aplicó la técnica de sobremuestreo SMOTE.</p>
+          </div>
+        </div>
+        <div class="tarjeta-fase">
+          <span class="material-symbols-outlined icono-fase">science</span>
+          <div class="contenido-fase">
+            <h4>Modelos tradicionales</h4>
+            <p>Se entrenaron y compararon clasificadores como SVM, Random Forest, XGBoost y MLP. El desempeño de estos
+              algoritmos se analizó tanto de forma aislada como en conjunto (combinando las inferencias de cada modelo a
+              través del ensamblador Voting Classifier). Como resultado, Voting Classifier obtuvo el mejor rendimiento
+              de la línea base tradicional.
+            </p>
+          </div>
+        </div>
+        <div class="tarjeta-fase">
+          <span class="material-symbols-outlined icono-fase">filter_alt</span>
+          <div class="contenido-fase">
+            <h4>Selección de características</h4>
+            <p>De 159 características estilométricas iniciales, se eliminaron variables redundantes mediante la
+              importancia de Random Forest y coeficientes de regularización RidgeCV, conservando 19 métricas clave.</p>
+          </div>
+        </div>
+        <div class="tarjeta-fase">
+          <span class="material-symbols-outlined icono-fase">psychology</span>
+          <div class="contenido-fase">
+            <h4>Fine-tuning</h4>
+            <p>Se realizó el fine-tuning en los modelos con arquitectura Transformer para acoplar la semántica del
+              español con el vector combinado de TF-IDF y las 19 características manuales, logrando los mejores
+              resultados.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Proceso de inferencia -->
+    <div class="tarjeta-bento panel-base tarjeta-metodologia-proceso">
+      <div class="cabecera-tarjeta">
+        <div class="placa-cabecera">Flujo de predicción</div>
+        <h3 class="titulo-tarjeta">Proceso de inferencia</h3>
+        <p class="subtitulo-tarjeta" style="min-height: 58px;">
+          Cuando se ingresa un texto en el sistema, el backend ejecuta un flujo secuencial en tiempo real para extraer
+          características y calcular la probabilidad de sátira:
+        </p>
+      </div>
+      <div class="linea-tiempo-v2">
+        <div class="elemento-linea-tiempo">
+          <div class="placa-linea-tiempo">1</div>
+          <div class="panel-linea-tiempo">
+            <strong>Preprocesamiento</strong>
+            <p>Lematización, conversión a minúsculas y eliminación de stopwords con spaCy y NLTK.</p>
+          </div>
+        </div>
+        <div class="elemento-linea-tiempo">
+          <div class="placa-linea-tiempo">2</div>
+          <div class="panel-linea-tiempo">
+            <strong>Extracción en paralelo</strong>
+            <p>Cómputo del embedding CLS de BETO (768 dim), el vector TF-IDF (3000 dim) y las 19 métricas
+              estilométricas.</p>
+          </div>
+        </div>
+        <div class="elemento-linea-tiempo">
+          <div class="placa-linea-tiempo">3</div>
+          <div class="panel-linea-tiempo">
+            <strong>Fusión y normalización</strong>
+            <p>Escalado MinMaxScaler sobre el vector TF-IDF y concatenación del vector final (3787 dim).</p>
+          </div>
+        </div>
+        <div class="elemento-linea-tiempo">
+          <div class="placa-linea-tiempo">4</div>
+          <div class="panel-linea-tiempo">
+            <strong>Red neuronal densa</strong>
+            <p>Clasificación mediante capas MLP con activación ReLU y LogSoftmax (umbral de predicción 0.55).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sección: Características de PLN -->
+<div *ngIf="seccionActiva === 'metricas'" class="seccion-metodologia-dinamica animacion-desvanecer">
+  <div class="tarjeta-bento tarjeta-ancho-completo panel-base" style="margin-bottom: var(--espacio-lg);">
+    <div class="cabecera-tarjeta">
+      <div class="placa-cabecera">Métricas de PLN extraídas</div>
+      <h3 class="titulo-tarjeta">19 características del texto</h3>
+      <p class="subtitulo-tarjeta">Estas son las métricas lingüísticas que complementan los embeddings de BETO en el
+        clasificador.</p>
+    </div>
+
+    <div class="rejilla-pildoras-caracteristicas">
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">menu_book</span>
+        <div class="contenido-pildora">
+          <strong>Facilidad de lectura</strong>
+          <span>Mide la complejidad de lectura y legibilidad del texto adaptado al español.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">opacity</span>
+        <div class="contenido-pildora">
+          <strong>Entropía léxica (Shannon)</strong>
+          <span>Evalúa la riqueza y la distribución de palabras para detectar repeticiones atípicas.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">repeat</span>
+        <div class="contenido-pildora">
+          <strong>Repetición sintáctica</strong>
+          <span>Mide la uniformidad y recurrencia de estructuras gramaticales con patrones de spaCy.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">find_in_page</span>
+        <div class="contenido-pildora">
+          <strong>Frecuencia de palabras inusuales</strong>
+          <span>Calcula la proporción de términos fuera del diccionario CREA (Real Academia Española).</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">theater_comedy</span>
+        <div class="contenido-pildora">
+          <strong>Clasificación de ironía (RoBERTa)</strong>
+          <span>Probabilidad de tono irónico calculada con el modelo cardiffnlp/twitter-roberta-base-irony.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">help_center</span>
+        <div class="contenido-pildora">
+          <strong>Preguntas retóricas</strong>
+          <span>Conteo de oraciones interrogativas que pueden indicar cuestionamientos satíricos.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">account_tree</span>
+        <div class="contenido-pildora">
+          <strong>Profundidad sintáctica</strong>
+          <span>Nivel de profundidad promedio del árbol de dependencia gramatical extraído con spaCy.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">label</span>
+        <div class="contenido-pildora">
+          <strong>Proporción de sustantivos</strong>
+          <span>Densidad de nombres sustantivos calculados sobre el total de palabras con spaCy.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">play_arrow</span>
+        <div class="contenido-pildora">
+          <strong>Proporción de verbos</strong>
+          <span>Densidad de acciones o verbos calculados en el fragmento con spaCy.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">description</span>
+        <div class="contenido-pildora">
+          <strong>Proporción de adjetivos</strong>
+          <span>Densidad de adjetivos calificativos y descriptivos analizados con spaCy.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">grid_view</span>
+        <div class="contenido-pildora">
+          <strong>Diversidad léxica</strong>
+          <span>Relación porcentual entre el número de vocabulario único y el total de palabras.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">straighten</span>
+        <div class="contenido-pildora">
+          <strong>Longitud media de palabra</strong>
+          <span>Promedio de caracteres por palabra evaluados en las oraciones lematizadas.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">notes</span>
+        <div class="contenido-pildora">
+          <strong>Longitud media de oración</strong>
+          <span>Promedio de palabras por oración calculado en las sentencias procesadas.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">analytics</span>
+        <div class="contenido-pildora">
+          <strong>Desviación estándar de oraciones</strong>
+          <span>Mide la variabilidad en la longitud de las oraciones para captar cambios de ritmo.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">sort_by_alpha</span>
+        <div class="contenido-pildora">
+          <strong>Cantidad de palabras (original)</strong>
+          <span>Tokens totales de palabras detectadas en el texto de entrada sin procesar con NLTK.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">text_fields</span>
+        <div class="contenido-pildora">
+          <strong>Cantidad de caracteres (original)</strong>
+          <span>Longitud de caracteres físicos del fragmento original incluyendo espacios.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">cleaning_services</span>
+        <div class="contenido-pildora">
+          <strong>Cantidad de palabras (procesadas)</strong>
+          <span>Palabras resultantes de la lematización excluyendo stopwords con spaCy.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">edit_note</span>
+        <div class="contenido-pildora">
+          <strong>Cantidad de caracteres (procesados)</strong>
+          <span>Longitud del texto resultante tras el filtrado y lematización.</span>
+        </div>
+      </div>
+      <div class="tarjeta-pildora-caracteristica">
+        <span class="pill-icon material-symbols-outlined">segment</span>
+        <div class="contenido-pildora">
+          <strong>Número de oraciones</strong>
+          <span>Total de sentencias y delimitadores identificados en el texto analizado.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sección: Rendimiento global -->
+<div *ngIf="seccionActiva === 'rendimiento'" class="seccion-metodologia-dinamica animacion-desvanecer">
+  <div class="tarjeta-bento tarjeta-ancho-completo panel-base">
+    <div class="cabecera-tarjeta">
+      <div class="placa-cabecera">Métricas de rendimiento global (BETO)</div>
+      <h3 class="titulo-tarjeta">Resultados obtenidos en la fase de validación</h3>
+      <p class="subtitulo-tarjeta">
+        A continuación se detallan los resultados obtenidos en la fase de validación del modelo clasificador híbrido
+        basado en BETO:
+      </p>
+    </div>
+
+    <div style="margin-top: -20px;" class="contenedor-metricas-globales">
+      <div class="item-metrica-global">
+        <div class="titulo-valor-metrica">
+          <span class="titulo">Exactitud global (Accuracy)</span>
+          <span class="valor">87.01%</span>
+        </div>
+        <p class="descripcion-metrica">
+          Mide la proporción total de predicciones correctas (tanto textos satíricos como neutros) sobre el total del
+          dataset. Un 87.01% refleja un desempeño robusto en la generalización.
+        </p>
+      </div>
+
+      <div class="item-metrica-global">
+        <div class="titulo-valor-metrica">
+          <span class="titulo">Medida F1-score (Sátira)</span>
+          <span class="valor">86.56%</span>
+        </div>
+        <p class="descripcion-metrica">
+          Es el promedio armónico entre la precisión y la sensibilidad para la sátira. Equilibra de forma óptima los
+          falsos positivos y falsos negativos, demostrando la estabilidad del modelo.
+        </p>
+      </div>
+
+      <div class="item-metrica-global">
+        <div class="titulo-valor-metrica">
+          <span class="titulo">Precisión (Clase sátira)</span>
+          <span class="valor">85.75%</span>
+        </div>
+        <p class="descripcion-metrica">
+          Representa el porcentaje de aciertos reales entre todos los casos que el modelo detectó como sátira. Minimiza
+          la
+          posibilidad de calificar falsamente un texto serio.
+        </p>
+      </div>
+
+      <div class="item-metrica-global">
+        <div class="titulo-valor-metrica">
+          <span class="titulo">Sensibilidad / exhaustividad</span>
+          <span class="valor">87.37%</span>
+        </div>
+        <p class="descripcion-metrica">
+          Indica la capacidad del detector para identificar todas las sátiras reales presentes en el corpus. Refleja la
+          cobertura y tasa de captura del clasificador.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

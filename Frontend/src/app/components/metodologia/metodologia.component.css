@@ -1,0 +1,667 @@
+/* Estilos del panel de metodología académica */
+
+:host {
+  --color-primario-hsl: 40, 65%, 54%;
+  --fondo-oscuro-hsl: 210, 15%, 6%;
+  --fondo-tarjeta-hsl: 210, 15%, 10%;
+  --fondo-resaltado-hsl: 210, 15%, 13%;
+  --borde-sutil-hsl: 215, 15%, 16%;
+  --texto-principal-hsl: 220, 10%, 96%;
+  --texto-atenuado-hsl: 217, 12%, 59%;
+}
+
+.cuadricula-bento {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: var(--espacio-lg);
+  margin-bottom: var(--espacio-xl);
+}
+
+@media (max-width: 950px) {
+  .cuadricula-bento {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tarjeta-bento {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.placa-cabecera {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-primario);
+  letter-spacing: 0.12em;
+  margin-bottom: var(--espacio-xs);
+  text-transform: uppercase;
+}
+
+.cabecera-tarjeta {
+  margin-bottom: var(--espacio-md);
+}
+
+.titulo-tarjeta {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: var(--espacio-xs);
+  letter-spacing: -0.02em;
+  font-family: var(--fuente-titulos);
+  color: var(--texto-principal);
+}
+
+.subtitulo-tarjeta {
+  font-size: 13px;
+  color: var(--texto-atenuado);
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.texto-metodologia {
+  padding: var(--espacio-xl);
+}
+
+.introduccion-acerca-de {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--texto-principal);
+  margin-bottom: var(--espacio-xl);
+  text-align: justify;
+}
+
+.subtitulo-metodologia {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-primario);
+  letter-spacing: 0.12em;
+  margin-bottom: var(--espacio-xs);
+  text-transform: uppercase;
+}
+
+.caracteristicas-metodologia {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-lg);
+}
+
+.elemento-metodo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-md);
+}
+
+.icono-metodo {
+  font-size: 20px;
+  color: var(--color-primario);
+  background: #101317;
+  border: 1px solid var(--borde-sutil);
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.elemento-metodo strong {
+  font-size: 13.5px;
+  color: var(--texto-principal);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.elemento-metodo p {
+  font-size: 12.5px;
+  color: var(--texto-atenuado);
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.tarjeta-pasos-metodologia {
+  padding: var(--espacio-xl);
+}
+
+.subtitulo-tecnico {
+  font-size: 13px;
+  color: var(--texto-atenuado);
+  margin-bottom: var(--espacio-xl);
+}
+
+.linea-tiempo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-xl);
+}
+
+.elemento-linea-tiempo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-md);
+  position: relative;
+}
+
+.elemento-linea-tiempo:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 28px;
+  bottom: -28px;
+  width: 1px;
+  background: var(--borde-sutil);
+}
+
+.placa-linea-tiempo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #101317;
+  border: 1px solid var(--borde-sutil);
+  color: var(--texto-atenuado);
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.elemento-linea-tiempo:hover .placa-linea-tiempo {
+  background: var(--fondo-resaltado);
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+.panel-linea-tiempo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.panel-linea-tiempo strong {
+  font-size: 13.5px;
+  color: var(--texto-principal);
+}
+
+.panel-linea-tiempo p {
+  font-size: 12px;
+  color: var(--texto-atenuado);
+  line-height: 1.4;
+  text-align: justify;
+}
+
+/* Contenedor de métricas globales en metodología */
+.contenedor-metricas-globales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  /* Mayor espacio entre tarjetas */
+  margin-top: var(--espacio-lg);
+  padding-top: 16px;
+  /* Añade margen interno superior para separar del texto de descripción */
+}
+
+.item-metrica-global {
+  background: #0d0f12;
+  border: 1px solid var(--borde-sutil);
+  border-radius: var(--borde-redondeado-md);
+  padding: 24px;
+  /* Mayor espacio interno para respirar */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Mayor separación entre título y descripción */
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.item-metrica-global:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primario);
+}
+
+.titulo-valor-metrica {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed var(--borde-sutil);
+  padding-bottom: 8px;
+}
+
+.titulo-valor-metrica .titulo {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--texto-principal);
+}
+
+.titulo-valor-metrica .valor {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-primario);
+  font-family: var(--fuente-titulos);
+}
+
+.descripcion-metrica {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--texto-atenuado);
+  margin: 0;
+  text-align: justify;
+}
+
+/* Fases del proyecto y experimentacion */
+.rejilla-fases-proyecto {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--espacio-md);
+  margin-top: var(--espacio-md);
+  margin-bottom: var(--espacio-sm);
+}
+
+@media (max-width: 600px) {
+  .rejilla-fases-proyecto {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tarjeta-fase {
+  background: #101317;
+  border: 1px solid var(--borde-sutil);
+  border-radius: 8px;
+  padding: var(--espacio-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-md);
+  transition: all var(--transicion-rapida);
+}
+
+.tarjeta-fase:hover {
+  background: var(--fondo-resaltado);
+  border-color: var(--color-primario);
+}
+
+.icono-fase {
+  font-size: 20px;
+  color: var(--color-primario);
+  background: #0d0f12;
+  border: 1px solid var(--borde-sutil);
+  padding: 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.contenido-fase {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contenido-fase h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--texto-principal);
+  margin: 0;
+}
+
+.contenido-fase p {
+  font-size: 11px;
+  color: var(--texto-atenuado);
+  line-height: 1.45;
+  margin: 0;
+  text-align: justify;
+}
+
+/* Rejilla de 19 caracteristicas de PLN */
+.rejilla-pildoras-caracteristicas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espacio-md);
+  margin-top: var(--espacio-lg);
+}
+
+.tarjeta-pildora-caracteristica {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-md);
+  padding: 12px 14px;
+  background: #101317;
+  border: 1px solid var(--borde-sutil);
+  border-radius: 8px;
+  transition: all var(--transicion-rapida);
+}
+
+.tarjeta-pildora-caracteristica:hover {
+  border-color: #2b333b;
+  background: var(--fondo-resaltado);
+}
+
+.tarjeta-pildora-caracteristica .pill-icon {
+  font-size: 20px;
+  color: var(--color-primario);
+}
+
+.contenido-pildora {
+  display: flex;
+  flex-direction: column;
+}
+
+.contenido-pildora strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+.contenido-pildora span {
+  font-size: 10.5px;
+  color: var(--texto-atenuado);
+  text-align: justify;
+}
+
+@media (max-width: 900px) {
+  .rejilla-pildoras-caracteristicas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .rejilla-pildoras-caracteristicas {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Contenedor de selectores/pestañas de metodología con diseño premium tipo control deslizante */
+.contenedor-selectores-metodologia {
+  display: flex;
+  gap: var(--espacio-md);
+  margin-bottom: var(--espacio-xl);
+  padding: 6px;
+  background: hsl(var(--fondo-tarjeta-hsl));
+  border: 1px solid hsl(var(--borde-sutil-hsl));
+  border-radius: 14px;
+  width: fit-content;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.boton-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  color: hsl(var(--texto-atenuado-hsl));
+  font-family: var(--fuente-titulos);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--transicion-normal);
+}
+
+.boton-tab:hover {
+  color: hsl(var(--texto-principal-hsl));
+  background: hsl(var(--fondo-resaltado-hsl));
+}
+
+.boton-tab.activo {
+  color: hsl(var(--color-primario-hsl));
+  background: hsla(var(--color-primario-hsl), 0.08);
+  border-color: hsla(var(--color-primario-hsl), 0.2);
+  box-shadow: 0 4px 15px hsla(var(--color-primario-hsl), 0.05);
+}
+
+.boton-tab span.material-symbols-outlined {
+  font-size: 19px;
+  transition: transform var(--transicion-rapida);
+}
+
+.boton-tab.activo span.material-symbols-outlined {
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .contenedor-selectores-metodologia {
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    display: inline-flex;
+    padding: 6px;
+    scrollbar-width: none;
+  }
+
+  .contenedor-selectores-metodologia::-webkit-scrollbar {
+    display: none;
+  }
+
+  .boton-tab {
+    flex-shrink: 0;
+  }
+}
+
+/* Cuadrícula equilibrada para Fases y Proceso en formato side-by-side */
+.cuadricula-fases-proceso {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--espacio-lg);
+  margin-bottom: var(--espacio-xl);
+  align-items: stretch;
+  /* Estira las tarjetas para que tengan exactamente el mismo tamaño */
+}
+
+@media (max-width: 1050px) {
+  .cuadricula-fases-proceso {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tarjeta-metodologia-proceso {
+  padding: var(--espacio-xl);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Rejilla de fases interna */
+.rejilla-fases-proyecto-v2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--espacio-md);
+  flex-grow: 1;
+}
+
+@media (max-width: 600px) {
+  .rejilla-fases-proyecto-v2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Contenedor de línea de tiempo interno */
+.linea-tiempo-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-xl);
+  margin-top: var(--espacio-md);
+  flex-grow: 1;
+}
+
+/* Animación de entrada fluida */
+.seccion-metodologia-dinamica {
+  animation: desvanecer-desplazar var(--transicion-normal) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes desvanecer-desplazar {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cuadrícula de introducción con texto y matriz de confusión */
+.cuadricula-introduccion {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--espacio-xl);
+  align-items: center;
+}
+
+@media (max-width: 950px) {
+  .cuadricula-introduccion {
+    grid-template-columns: 1fr;
+    gap: var(--espacio-lg);
+  }
+}
+
+.columna-introduccion-texto {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.columna-introduccion-grafico {
+  background: hsl(var(--fondo-resaltado-hsl));
+  border: 1px solid hsl(var(--borde-sutil-hsl));
+  border-radius: 12px;
+  padding: var(--espacio-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+}
+
+.cabecera-grafico {
+  border-bottom: 1px solid hsl(var(--borde-sutil-hsl));
+  padding-bottom: var(--espacio-xs);
+  display: flex;
+  flex-direction: column;
+}
+
+.contenedor-matriz-visual {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-md);
+}
+
+.matriz-grafica {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-self: center;
+}
+
+.etiqueta-eje-x {
+  font-size: 8px;
+  font-weight: 800;
+  color: hsl(var(--texto-atenuado-hsl));
+  text-align: center;
+  letter-spacing: 0.15em;
+  margin-bottom: 2px;
+}
+
+.cabeceras-x {
+  display: flex;
+  justify-content: flex-start;
+  gap: 4px;
+  padding-left: 54px;
+  /* Offset para alinear con las celdas considerando el eje Y */
+}
+
+.subetiqueta-x {
+  font-size: 9px;
+  font-weight: 700;
+  color: hsl(var(--texto-atenuado-hsl));
+  width: 76px;
+  text-align: center;
+}
+
+.cuerpo-matriz {
+  display: flex;
+  align-items: center;
+}
+
+.etiqueta-eje-y {
+  font-size: 8px;
+  font-weight: 800;
+  color: hsl(var(--texto-atenuado-hsl));
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  letter-spacing: 0.15em;
+  margin-right: 6px;
+}
+
+.filas-matriz {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fila-matriz {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.etiqueta-y {
+  font-size: 9px;
+  font-weight: 700;
+  color: hsl(var(--texto-atenuado-hsl));
+  width: 44px;
+  text-align: right;
+  margin-right: 4px;
+}
+
+.celda-matriz {
+  width: 76px;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  border: 1px solid hsl(var(--borde-sutil-hsl));
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.celda-matriz:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: help;
+}
+
+.celda-matriz.acierto {
+  background: hsla(var(--color-primario-hsl), 0.12);
+  border-color: hsla(var(--color-primario-hsl), 0.4);
+}
+
+.celda-matriz.acierto .valor-celda {
+  color: hsl(var(--color-primario-hsl));
+}
+
+.celda-matriz.error {
+  background: hsla(0, 65%, 50%, 0.08);
+  border-color: hsla(0, 65%, 50%, 0.22);
+}
+
+.celda-matriz.error .valor-celda {
+  color: hsl(0, 80%, 65%);
+}
+
+.valor-celda {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.leyenda-celda {
+  font-size: 8px;
+  color: hsl(var(--texto-atenuado-hsl));
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.explicacion-matriz {
+  border-top: 1px solid hsl(var(--borde-sutil-hsl));
+  padding-top: var(--espacio-sm);
+}
+
+.lista-explicacion-matriz li::marker {
+  color: hsl(var(--color-primario-hsl));
+}
