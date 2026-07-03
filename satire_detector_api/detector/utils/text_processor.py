@@ -40,6 +40,11 @@ class TextProcessor:
         self.stopwords_es = set(stopwords.words('spanish'))
         
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        # Optimizar PyTorch para CPU de 1 núcleo (evitar sobrecarga de hilos)
+        torch.set_num_threads(1)
+        torch.set_num_interop_threads(1)
+        
         self.inference_lock = threading.RLock()
         self._initialized = True
 
@@ -99,9 +104,10 @@ class TextProcessor:
 
 
 
-    def satira(self, text):
+    def satira(self, text, doc=None):
        
-        doc = self.nlp(text)
+        if doc is None:
+            doc = self.nlp(text)
         text = text.lower()
         # Normaliza y limpia el texto (quita acentos y puntuación)
 
@@ -132,9 +138,10 @@ class TextProcessor:
     # Configuración inicial (ejecutar una vez)
 
 
-    def extract_features( self, text):
+    def extract_features( self, text, doc=None):
         #self.irony_detector = pipeline("text-classification", model="cardiffnlp/twitter-roberta-base-irony")
-        doc = self.nlp(text)
+        if doc is None:
+            doc = self.nlp(text)
 
         # 1️⃣ Longitud del texto
         num_words = len(word_tokenize(text))
@@ -198,10 +205,11 @@ class TextProcessor:
 
         }
 
-    def calculate_dependency_metrics(self, text):
+    def calculate_dependency_metrics(self, text, doc=None):
         #nlp = spacy.load("es_core_news_sm")
      
-        doc = self.nlp(text)
+        if doc is None:
+            doc = self.nlp(text)
 
         total_depth = 0
         total_length = 0
@@ -256,9 +264,10 @@ class TextProcessor:
         entropy = -sum((count / total_words) * math.log2(count / total_words)
                 for count in word_counts.values())
         return round(entropy, 2)
-    def syntactic_pattern_repetition(self, text):
+    def syntactic_pattern_repetition(self, text, doc=None):
        
-        doc = self.nlp(text)
+        if doc is None:
+            doc = self.nlp(text)
         dep_patterns = [token.dep_ for token in doc]  # Ej: ['nsubj', 'ROOT', 'dobj']
         dep_counts = Counter(dep_patterns)
 
@@ -271,11 +280,11 @@ class TextProcessor:
         common_set = self.model_loader.common_words_es  # <- Set cargado desde CREA_PalabrasComunes.txt
         unusual_words = words_in_text - common_set
         return round(len(unusual_words) / len(words_in_text), 2) if words_in_text else 0
-    def analyze_text(self, text):
+    def analyze_text(self, text, doc=None):
         return {
             "Flesch Score": self.flesch_score(text),  # Usa textstat.flesch_reading_ease()
             "Lexical Entropy": self.lexical_entropy(text),  # Basado en Counter() y math.log2
-            "Syntactic Repetition": self.syntactic_pattern_repetition(text),  # Conteo de dependencias
+            "Syntactic Repetition": self.syntactic_pattern_repetition(text, doc=doc),  # Conteo de dependencias
             "Unusual Word Frequency": self.unusual_word_frequency(text)  # Compara con common_words_es
         }
 
@@ -331,15 +340,12 @@ class TextProcessor:
         """Combina todas las características ya calculadas por las funciones auxiliares"""
         # Obtener todas las métricas de las funciones existentes
         processed_text = self.preprocess_text(text)
-        basic_features = self.extract_features(processed_text)
-        satire_features = self.satira(processed_text)
-        dependency_metrics = self.calculate_dependency_metrics(processed_text)
-        text_analysis = self.analyze_text(processed_text)
-
-        # Calcular algunas métricas adicionales que no están en las funciones anteriores
         doc = self.nlp(processed_text)
-        tokens = text.split()
-        sentences = [s.strip() for s in re.split(r'[.!?]+', text) if s.strip()]
+        
+        basic_features = self.extract_features(processed_text, doc=doc)
+        satire_features = self.satira(processed_text, doc=doc)
+        dependency_metrics = self.calculate_dependency_metrics(processed_text, doc=doc)
+        text_analysis = self.analyze_text(processed_text, doc=doc)
 
         # Combinar todos los features
         combined_features = {

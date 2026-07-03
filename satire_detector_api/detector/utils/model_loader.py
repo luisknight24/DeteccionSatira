@@ -69,6 +69,19 @@ class ModelLoader:
         common_words_path = os.path.join(model_dir1, 'CREA_PalabrasComunes.txt')
         historial_csv_path = os.path.join(model_dir1, 'historial_entrenamientos.csv')
 
+        # Descargar pesos del modelo desde la release de GitHub si no existen en local
+        if not os.path.exists(model_path):
+            print(f"[INFO] No se encontró el modelo localmente en: {model_path}")
+            print("[INFO] Descargando pesos del modelo entrenado desde GitHub Releases...")
+            try:
+                import urllib.request
+                url = "https://github.com/luisknight24/DeteccionSatira/releases/download/v1.0.0/best_model_spanish_loss.pt"
+                os.makedirs(os.path.dirname(model_path), exist_ok=True)
+                urllib.request.urlretrieve(url, model_path)
+                print("[OK] Pesos del modelo descargados con éxito.")
+            except Exception as e:
+                print(f"[ERROR] Error al descargar los pesos desde la release pública: {e}")
+
         # Check if files exist, if not run in mock mode
         required_files = [vectorizer_path, scaler_path, model_path, satirical_words_path, common_words_path]
         missing_files = [f for f in required_files if not os.path.exists(f)]

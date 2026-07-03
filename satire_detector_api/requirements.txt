@@ -13,4 +13,5 @@ xgboost
 imbalanced-learn
 spacy
 torch
-transformers
+transformers==4.44.2
+python-dotenv
