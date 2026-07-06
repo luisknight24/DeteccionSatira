@@ -27,6 +27,7 @@ RUN pip install --no-cache-dir --user gunicorn
 # Pre-download NLTK resources and spaCy model during build time
 RUN python -m nltk.downloader punkt punkt_tab stopwords vader_lexicon
 RUN python -m spacy download es_core_news_sm
+RUN python -c "from transformers import pipeline; pipeline('text-classification', model='cardiffnlp/twitter-roberta-base-irony')"
 
 # Copy the application source code
 COPY --chown=user . .
