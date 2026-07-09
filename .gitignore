@@ -15,3 +15,5 @@ db.sqlite3
 /satire_detector_api/static/tfidf_vectorizer.pkl
 /satire_detector_api/static/minmax_scaler.pkl
 .agents/
+skills-lock.json
+scratch/
