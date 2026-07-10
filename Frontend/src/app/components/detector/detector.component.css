@@ -671,3 +671,28 @@
   margin: 0;
   text-align: justify;
 }
+
+.banner-modo-demo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-sm);
+  padding: 10px 12px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 6px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.banner-modo-demo .icono-nota {
+  color: #f59e0b;
+  font-size: 18px;
+}
+
+.banner-modo-demo .texto-nota {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--texto-principal);
+  line-height: 1.5;
+  text-align: justify;
+}

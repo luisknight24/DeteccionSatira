@@ -114,6 +114,14 @@
       [class.es-satira]="resultado.prediccion === 'ES SÁTIRA'">
       <div class="brillo-prediccion"></div>
 
+      <!-- Placa de modo demostración local -->
+      <div *ngIf="resultado.isMock" class="banner-modo-demo">
+        <span class="material-symbols-outlined icono-nota">info</span>
+        <p class="texto-nota">
+          <strong>Modo de demostración local (Servidor offline):</strong> El backend inteligente (BETO) está apagado en este momento. Conéctalo iniciando el servidor en Google Colab o explora la interfaz en este modo de simulación.
+        </p>
+      </div>
+
       <div class="contenedor-placa-resultado">
         <div class="placa-clase" [class.fondo-satira]="resultado.prediccion === 'ES SÁTIRA'">
           <span class="material-symbols-outlined icono-placa">
