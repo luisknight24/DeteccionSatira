@@ -7,7 +7,7 @@
 
 Un clasificador diseñado para la detección automática de textos satíricos en español, que combina la potencia del modelo Transformer **BETO** (BERT adaptado al español) con **19 características lingüísticas** (sintácticas, fraseológicas y semánticas) extraídas mediante **spaCy** y **NLTK**, optimizadas a través de un proceso de selección de características (*feature selection*).
 
-> **Prueba en vivo:** Puedes interactuar directamente con el modelo en [deteccion-satira.vercel.app](https://deteccion-satira-1s9tzvcnb-luis-knight.vercel.app/detector).
+> **Prueba en vivo:** Puedes interactuar directamente con el modelo en [deteccion-satira.vercel.app](https://deteccion-satira.vercel.app/).
 >
 > *Nota:* La predicción podría tardar unos 30 segundos en completarse debido al encendido de los recursos en la nube.
 
