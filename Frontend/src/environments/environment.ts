@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://luisknight24-deteccion-satira.hf.space/api/' // Reemplazar con la URL real del backend en producción
+  apiUrl: 'https://satira-detector.duckdns.org/api/' // URL segura del backend en Oracle Cloud VPS con SSL gratis
 };

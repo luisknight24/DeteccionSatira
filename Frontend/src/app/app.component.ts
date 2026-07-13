@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   mostrarPanelConfiguracion: boolean = false;
   urlServidorInput: string = '';
 
-  constructor(private servicioSatira: ServicioSatira) {}
+  constructor(private servicioSatira: ServicioSatira) { }
 
   ngOnInit(): void {
     this.cargarUrlActual();
